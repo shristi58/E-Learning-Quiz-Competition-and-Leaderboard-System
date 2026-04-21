@@ -28,6 +28,11 @@
         <servlet-name>StudentInsert</servlet-name>
         <servlet-class>oes.controller.StudentInsert</servlet-class>
     </servlet>
+<servlet>
+    <servlet-name>StudentGoogleCallbackServlet</servlet-name>
+    <servlet-class>oes.controller.StudentGoogleCallbackServlet</servlet-class>
+</servlet>
+   
     <servlet-mapping>
         <servlet-name>ValidateAdmin</servlet-name>
         <url-pattern>/ValidateAdmin</url-pattern>
@@ -52,10 +57,16 @@
         <servlet-name>QuestionInsert</servlet-name>
         <url-pattern>/QuestionInsert</url-pattern>
     </servlet-mapping>
+    
     <servlet-mapping>
         <servlet-name>StudentInsert</servlet-name>
         <url-pattern>/StudentInsert</url-pattern>
     </servlet-mapping>
+    <!-- After the last <servlet-mapping> block -->
+<servlet-mapping>
+    <servlet-name>StudentGoogleCallbackServlet</servlet-name>
+    <url-pattern>/StudentGoogleCallbackServlet</url-pattern>
+</servlet-mapping>
     <session-config>
         <session-timeout>
             30

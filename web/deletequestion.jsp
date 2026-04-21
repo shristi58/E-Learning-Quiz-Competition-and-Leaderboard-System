@@ -1,30 +1,22 @@
-<%-- 
-    Document   : deletequestion
-    Created on : 8 Jul 2022, 16:42:19
-    Author     : adrianadewunmi
---%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-    <%@page import="oes.db.*" %>
-    <%@page import="oes.model.*" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="oes.model.QuestionsDao" %>
+<%
+    // ── Guard: admin must be logged in ────────────────────────────────────────
+    if (session.getAttribute("username") == null) {
+        response.sendRedirect("AdminLogin.jsp");
+        return;
+    }
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta charset="ISO-8859-1">
-        <title>Delete Questions</title>
-    </head>
-    <body>
-        <%
-		Questions q = new Questions();
-		q.setQuestion(request.getParameter("ques"));
-		int status = QuestionsDao.deleteRecord(q);
-		if(status > 0)
-			response.sendRedirect("QuestionList.jsp");
-		else
-			out.print("Error");
-		
-	%>
-    </body>
-</html>
+    // ── Read questionId, delete by primary key, redirect back ─────────────────
+    String quesParam = request.getParameter("ques");
+    if (quesParam != null && !quesParam.trim().isEmpty()) {
+        try {
+            int questionId = Integer.parseInt(quesParam.trim());
+            QuestionsDao.deleteRecord(questionId);
+        } catch (NumberFormatException e) {
+            // bad param — just redirect
+        }
+    }
+
+    response.sendRedirect("QuestionList.jsp?msg1=Question+deleted.");
+%>

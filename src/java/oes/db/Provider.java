@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author adrianadewunmi
  */
 public class Provider {
     
@@ -19,7 +18,7 @@ public class Provider {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             try {
-                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/OnlineQuizDB", "root", "abc");
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/OnlineQuizDB", "root", "Samrat7894");
                 System.out.println("Connection Successful, Yippe!!!");
             } catch (SQLException ex) {
                 System.err.println("ERROR -> SQLException");

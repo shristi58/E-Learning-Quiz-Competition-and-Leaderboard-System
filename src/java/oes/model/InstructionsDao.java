@@ -88,7 +88,7 @@ public class InstructionsDao {
             String sql = "update instructiontable set instruction=? where instruction=?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, instamodified);
-            pst.setString(1, instaoriginal);
+            pst.setString(2, instaoriginal);
             int val = pst.executeUpdate();
             if(val > 0){
                 status = 1;

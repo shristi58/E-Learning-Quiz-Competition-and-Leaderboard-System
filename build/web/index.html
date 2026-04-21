@@ -1,0 +1,1199 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Examily — Smart Exam Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,700;9..144,900&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f2eb;
+      --ink: #1a1714;
+      --ink2: #4a4540;
+      --ink3: #8a837a;
+      --red: #c94a2a;
+      --red-light: #f5e8e4;
+      --red-dark: #a03820;
+      --card: #ffffff;
+      --border: rgba(26,23,20,0.1);
+      --border2: rgba(26,23,20,0.06);
+      --gold: #d4a840;
+      --green: #2d6a4f;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(245,242,235,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border2);
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-mark {
+      width: 34px; height: 34px;
+      background: var(--ink);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-mark svg { width: 18px; height: 18px; fill: var(--bg); }
+    .nav-logo-text {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 8px;
+      list-style: none;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      text-decoration: none;
+      color: var(--ink2);
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 100px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-links a:hover { background: var(--border2); color: var(--ink); }
+
+    .nav-cta {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .btn-outline {
+      padding: 9px 22px;
+      border: 1.5px solid var(--ink);
+      border-radius: 100px;
+      background: transparent;
+      color: var(--ink);
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { background: var(--ink); color: var(--bg); }
+
+    .btn-solid {
+      padding: 9px 22px;
+      border: 1.5px solid var(--red);
+      border-radius: 100px;
+      background: var(--red);
+      color: #fff;
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-solid:hover { background: var(--red-dark); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* big background letter */
+    .hero-bg-letter {
+      position: absolute;
+      right: -40px; bottom: -80px;
+      font-family: 'Fraunces', serif;
+      font-size: clamp(280px, 30vw, 480px);
+      font-weight: 900;
+      color: rgba(26,23,20,0.04);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* decorative circle */
+    .hero-circle {
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,74,42,0.12);
+      top: 50%; right: 10%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    .hero-circle-2 {
+      position: absolute;
+      width: 340px; height: 340px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,74,42,0.08);
+      top: 50%; right: 15%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 64px 80px 80px;
+      position: relative; z-index: 2;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--red-light);
+      color: var(--red);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      border: 1px solid rgba(201,74,42,0.2);
+      margin-bottom: 28px;
+      width: fit-content;
+    }
+    .hero-tag-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: pulse 2s infinite;
+    }
+
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(3rem, 5vw, 4.8rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--red);
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--ink2);
+      line-height: 1.7;
+      max-width: 420px;
+      margin-bottom: 40px;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+    }
+
+    .btn-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--ink);
+      color: var(--bg);
+      border: none;
+      border-radius: 100px;
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .btn-hero:hover { transform: translateY(-2px); background: #2d2925; }
+    .btn-hero svg { width: 16px; height: 16px; }
+
+    .btn-hero-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-hero-ghost:hover { border-color: var(--ink); background: rgba(26,23,20,0.04); }
+
+    .hero-stats {
+      display: flex;
+      gap: 36px;
+    }
+    .stat-item {}
+    .stat-num {
+      font-family: 'Fraunces', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--ink3);
+      font-weight: 500;
+      margin-top: 3px;
+    }
+    .stat-divider {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch;
+    }
+
+    /* ── HERO RIGHT ── */
+    .hero-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 80px 80px 40px;
+      position: relative; z-index: 2;
+      animation: fadeUp 0.7s 0.25s ease both;
+    }
+
+    .hero-card-stack {
+      position: relative;
+      width: 340px;
+    }
+
+    /* score card */
+    .score-card {
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--border2);
+      padding: 28px;
+      box-shadow: 0 24px 64px rgba(26,23,20,0.1), 0 4px 16px rgba(26,23,20,0.06);
+    }
+    .score-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .score-subject {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink3);
+    }
+    .score-badge {
+      background: #e8f5ee;
+      color: #2d6a4f;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+    .score-big {
+      font-family: 'Fraunces', serif;
+      font-size: 4rem;
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1;
+      letter-spacing: -3px;
+      margin-bottom: 4px;
+    }
+    .score-big span { color: var(--red); font-size: 2rem; }
+    .score-label { font-size: 0.82rem; color: var(--ink3); margin-bottom: 20px; }
+
+    .score-bar-wrap { margin-bottom: 20px; }
+    .score-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink2);
+      margin-bottom: 6px;
+    }
+    .score-bar {
+      height: 6px;
+      background: var(--border2);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: var(--red);
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .score-avatars {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .score-avatar-group {
+      display: flex;
+    }
+    .avatar-sm {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--card);
+      margin-left: -8px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+    }
+    .avatar-sm:first-child { margin-left: 0; }
+    .score-avatar-text {
+      font-size: 0.78rem;
+      color: var(--ink3);
+    }
+
+    /* floating badges */
+    .float-badge {
+      position: absolute;
+      background: var(--card);
+      border-radius: 14px;
+      border: 1px solid var(--border2);
+      padding: 12px 16px;
+      box-shadow: 0 8px 32px rgba(26,23,20,0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: float 4s ease-in-out infinite;
+    }
+    .float-badge-1 {
+      top: -24px; right: -32px;
+      animation-delay: 0s;
+    }
+    .float-badge-2 {
+      bottom: -20px; left: -40px;
+      animation-delay: 1.5s;
+    }
+    .float-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .float-icon-green { background: #e8f5ee; }
+    .float-icon-amber { background: #fef3e2; }
+    .float-badge-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+    .float-badge-sub {
+      font-size: 0.7rem;
+      color: var(--ink3);
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-section {
+      background: var(--ink);
+      padding: 18px 0;
+      overflow: hidden;
+      display: flex;
+      gap: 0;
+    }
+    .marquee-track {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      white-space: nowrap;
+      animation: marquee 20s linear infinite;
+    }
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(245,242,235,0.5);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+    .marquee-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--red);
+      flex-shrink: 0;
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 120px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 1rem;
+      color: var(--ink2);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 64px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feat-card {
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--border2);
+      padding: 32px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .feat-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px rgba(26,23,20,0.08);
+      border-color: var(--border);
+    }
+    .feat-card-large {
+      grid-column: span 2;
+    }
+
+    .feat-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+    .feat-icon-red { background: var(--red-light); }
+    .feat-icon-green { background: #e8f5ee; }
+    .feat-icon-amber { background: #fef3e2; }
+    .feat-icon-blue { background: #e8f0fe; }
+
+    .feat-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+    .feat-desc {
+      font-size: 0.88rem;
+      color: var(--ink3);
+      line-height: 1.65;
+    }
+
+    .feat-card-accent {
+      background: var(--ink);
+    }
+    .feat-card-accent .feat-title { color: var(--bg); }
+    .feat-card-accent .feat-desc { color: rgba(245,242,235,0.55); }
+    .feat-card-accent .feat-icon-red { background: rgba(201,74,42,0.2); }
+
+    /* inner mini leaderboard */
+    .mini-leaderboard {
+      margin-top: 20px;
+    }
+    .mini-lb-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border2);
+    }
+    .mini-lb-row:last-child { border-bottom: none; }
+    .mini-lb-rank {
+      font-family: 'Fraunces', serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--ink3);
+      width: 18px;
+      text-align: center;
+    }
+    .mini-lb-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .mini-lb-name {
+      flex: 1;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .mini-lb-score {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      padding: 120px 80px;
+      background: var(--ink);
+      position: relative;
+      overflow: hidden;
+    }
+    .how::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,74,42,0.15) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .how-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .how .section-eyebrow { color: var(--red); }
+    .how .section-title { color: var(--bg); }
+    .how .section-desc { color: rgba(245,242,235,0.5); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      margin-top: 64px;
+    }
+    .step {
+      position: relative;
+    }
+    .step-num {
+      font-family: 'Fraunces', serif;
+      font-size: 4rem;
+      font-weight: 900;
+      color: rgba(245,242,235,0.06);
+      line-height: 1;
+      margin-bottom: -10px;
+    }
+    .step-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: rgba(201,74,42,0.15);
+      border: 1px solid rgba(201,74,42,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 18px;
+    }
+    .step-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--bg);
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+    .step-desc {
+      font-size: 0.85rem;
+      color: rgba(245,242,235,0.45);
+      line-height: 1.65;
+    }
+    .step-connector {
+      position: absolute;
+      top: 68px; right: -16px;
+      width: 32px;
+      height: 1px;
+      background: rgba(201,74,42,0.25);
+    }
+    .step:last-child .step-connector { display: none; }
+
+    /* ── PORTAL CARDS ── */
+    .portals {
+      padding: 120px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .portal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 64px;
+    }
+
+    .portal-card {
+      border-radius: 24px;
+      padding: 48px;
+      border: 1px solid var(--border2);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease;
+    }
+    .portal-card:hover { transform: translateY(-4px); }
+
+    .portal-card-student {
+      background: var(--card);
+    }
+    .portal-card-admin {
+      background: var(--ink);
+    }
+
+    .portal-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .tag-student {
+      background: var(--red-light);
+      color: var(--red);
+    }
+    .tag-admin {
+      background: rgba(245,242,235,0.1);
+      color: rgba(245,242,235,0.6);
+    }
+
+    .portal-title {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+    .portal-card-student .portal-title { color: var(--ink); }
+    .portal-card-admin .portal-title { color: var(--bg); }
+
+    .portal-desc {
+      font-size: 0.9rem;
+      line-height: 1.65;
+      margin-bottom: 32px;
+    }
+    .portal-card-student .portal-desc { color: var(--ink2); }
+    .portal-card-admin .portal-desc { color: rgba(245,242,235,0.5); }
+
+    .portal-features {
+      list-style: none;
+      margin-bottom: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .portal-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+    }
+    .portal-card-student .portal-features li { color: var(--ink2); }
+    .portal-card-admin .portal-features li { color: rgba(245,242,235,0.6); }
+
+    .feat-check {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+    .check-student { background: #e8f5ee; color: var(--green); }
+    .check-admin { background: rgba(201,74,42,0.2); color: var(--red); }
+
+    .portal-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: 100px;
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .portal-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+    .btn-student { background: var(--ink); color: var(--bg); }
+    .btn-admin { background: var(--bg); color: var(--ink); }
+
+    .portal-bg-num {
+      position: absolute;
+      bottom: -40px; right: -10px;
+      font-family: 'Fraunces', serif;
+      font-size: 180px;
+      font-weight: 900;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+    .portal-card-student .portal-bg-num { color: rgba(26,23,20,0.04); }
+    .portal-card-admin .portal-bg-num { color: rgba(245,242,235,0.04); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      padding: 48px 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(245,242,235,0.06);
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--bg);
+      letter-spacing: -0.5px;
+    }
+    .footer-brand span { color: var(--red); }
+    .footer-copy {
+      font-size: 0.82rem;
+      color: rgba(245,242,235,0.35);
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.82rem;
+      color: rgba(245,242,235,0.45);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--bg); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.85); }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 100px; }
+      .hero-left { padding: 60px 32px 40px; }
+      .hero-right { display: none; }
+      .features { padding: 80px 32px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feat-card-large { grid-column: span 1; }
+      .how { padding: 80px 32px; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .portals { padding: 80px 32px; }
+      .portal-grid { grid-template-columns: 1fr; }
+      footer { padding: 32px 24px; flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 2a8 8 0 110 16A8 8 0 0112 4zm-1 4v5h5v-2h-3V8h-2z"/></svg>
+    </div>
+    <span class="nav-logo-text">Examily</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="ContactUs.jsp">Contact</a></li>
+  </ul>
+
+  <div class="nav-cta">
+    <a href="StudentLogin.jsp" class="btn-outline">Student Login</a>
+    <a href="AdminLogin.jsp" class="btn-solid">Examiner Login</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-letter">E</div>
+  <div class="hero-circle"></div>
+  <div class="hero-circle-2"></div>
+
+  <div class="hero-left">
+    <div class="hero-tag">
+      <span class="hero-tag-dot"></span>
+      University Exam Platform
+    </div>
+
+    <h1 class="hero-title">
+      Smarter exams,<br><em>better results.</em>
+    </h1>
+
+    <p class="hero-desc">
+      Examily makes online assessments effortless — from creating questions
+      to tracking student performance, all in one place.
+    </p>
+
+    <div class="hero-actions">
+      <a href="StudentLogin.jsp" class="btn-hero">
+        Start as Student
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <a href="AdminLogin.jsp" class="btn-hero-ghost">Examiner Access</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Students enrolled</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-num">1,200+</div>
+        <div class="stat-label">Questions in bank</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-num">98%</div>
+        <div class="stat-label">Uptime guarantee</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-card-stack">
+
+      <!-- floating badge top -->
+      <div class="float-badge float-badge-1">
+        <div class="float-icon float-icon-green">✓</div>
+        <div>
+          <div class="float-badge-title">Exam submitted!</div>
+          <div class="float-badge-sub">Results in seconds</div>
+        </div>
+      </div>
+
+      <!-- main score card -->
+      <div class="score-card">
+        <div class="score-card-header">
+          <span class="score-subject">Mathematics · Final</span>
+          <span class="score-badge">Top 5%</span>
+        </div>
+        <div class="score-big">92<span>/100</span></div>
+        <div class="score-label">Your score this attempt</div>
+
+        <div class="score-bar-wrap">
+          <div class="score-bar-label">
+            <span>Your score</span><span>92%</span>
+          </div>
+          <div class="score-bar"><div class="score-bar-fill" id="bar1" style="width:92%"></div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-bar-label">
+            <span>Class average</span><span>74%</span>
+          </div>
+          <div class="score-bar"><div class="score-bar-fill" id="bar2" style="width:74%; background:#d4a840"></div></div>
+        </div>
+
+        <div class="score-avatars">
+          <div class="score-avatar-group">
+            <div class="avatar-sm" style="background:#c94a2a">AK</div>
+            <div class="avatar-sm" style="background:#2d6a4f">PR</div>
+            <div class="avatar-sm" style="background:#185fa5">SM</div>
+            <div class="avatar-sm" style="background:#854f0b">+8</div>
+          </div>
+          <span class="score-avatar-text">also completed this exam</span>
+        </div>
+      </div>
+
+      <!-- floating badge bottom -->
+      <div class="float-badge float-badge-2">
+        <div class="float-icon float-icon-amber">🏆</div>
+        <div>
+          <div class="float-badge-title">Rank #3 on leaderboard</div>
+          <div class="float-badge-sub">Batch A · Physics</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="marquee-dot"></span>Timed Assessments</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Google Sign-In</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Live Leaderboards</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Question Bank</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Student Management</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Instant Results</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Score Analytics</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Exam Instructions</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Timed Assessments</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Google Sign-In</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Live Leaderboards</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Question Bank</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Student Management</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Instant Results</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Score Analytics</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Exam Instructions</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features reveal" id="features">
+  <div class="section-eyebrow">Platform Features</div>
+  <h2 class="section-title">Everything you need<br>to run great exams</h2>
+  <p class="section-desc">Built for university-level courses with tools for both students and examiners.</p>
+
+  <div class="features-grid">
+
+    <div class="feat-card feat-card-large feat-card-accent reveal">
+      <div class="feat-icon feat-icon-red">🏆</div>
+      <div class="feat-title">Live Leaderboard</div>
+      <div class="feat-desc">Real-time rankings motivate students and give instructors instant visibility into class performance.</div>
+      <div class="mini-leaderboard">
+        <div class="mini-lb-row">
+          <span class="mini-lb-rank">1</span>
+          <div class="mini-lb-avatar" style="background:#c94a2a">AK</div>
+          <span class="mini-lb-name" style="color:rgba(245,242,235,0.85)">Arjun Kumar</span>
+          <span class="mini-lb-score">98%</span>
+        </div>
+        <div class="mini-lb-row">
+          <span class="mini-lb-rank">2</span>
+          <div class="mini-lb-avatar" style="background:#185fa5">PR</div>
+          <span class="mini-lb-name" style="color:rgba(245,242,235,0.85)">Priya Rao</span>
+          <span class="mini-lb-score">95%</span>
+        </div>
+        <div class="mini-lb-row">
+          <span class="mini-lb-rank">3</span>
+          <div class="mini-lb-avatar" style="background:#2d6a4f">SM</div>
+          <span class="mini-lb-name" style="color:rgba(245,242,235,0.85)">Sameer M.</span>
+          <span class="mini-lb-score">92%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feat-card reveal">
+      <div class="feat-icon feat-icon-green">⏱</div>
+      <div class="feat-title">Timed Exams</div>
+      <div class="feat-desc">Set time limits that simulate real test conditions and auto-submit when time runs out.</div>
+    </div>
+
+    <div class="feat-card reveal">
+      <div class="feat-icon feat-icon-amber">📋</div>
+      <div class="feat-title">Question Bank</div>
+      <div class="feat-desc">Build, organize, and reuse questions across multiple exams with ease.</div>
+    </div>
+
+    <div class="feat-card reveal">
+      <div class="feat-icon feat-icon-blue">🔐</div>
+      <div class="feat-title">Google Sign-In</div>
+      <div class="feat-desc">Students log in instantly with their Google account — no password needed.</div>
+    </div>
+
+    <div class="feat-card reveal">
+      <div class="feat-icon feat-icon-red">📊</div>
+      <div class="feat-title">Score Analytics</div>
+      <div class="feat-desc">Track performance trends, view score distributions, and identify areas for improvement.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="section-eyebrow reveal">How It Works</div>
+    <h2 class="section-title reveal">Up and running<br>in minutes</h2>
+    <p class="section-desc reveal">Simple workflow for both examiners and students.</p>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <div class="step-icon">👤</div>
+        <div class="step-title">Create Account</div>
+        <div class="step-desc">Sign up as a student or log in as an examiner to access your portal.</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <div class="step-icon">📝</div>
+        <div class="step-title">Set Up Exam</div>
+        <div class="step-desc">Examiners add questions, set time limits, and publish instructions.</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <div class="step-icon">✍️</div>
+        <div class="step-title">Take the Test</div>
+        <div class="step-desc">Students read instructions, attempt the timed exam, and submit answers.</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">04</div>
+        <div class="step-icon">📈</div>
+        <div class="step-title">See Results</div>
+        <div class="step-desc">Instant scores, leaderboard rankings, and performance insights.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTALS -->
+<section class="portals" id="portals">
+  <div class="section-eyebrow reveal">Access Portals</div>
+  <h2 class="section-title reveal">Pick your portal</h2>
+  <p class="section-desc reveal">Separate, purpose-built experiences for students and examiners.</p>
+
+  <div class="portal-grid">
+
+    <div class="portal-card portal-card-student reveal">
+      <span class="portal-tag tag-student">Student</span>
+      <h3 class="portal-title">Student<br>Portal</h3>
+      <p class="portal-desc">Access exams, view your results, and track progress on the leaderboard.</p>
+      <ul class="portal-features">
+        <li><span class="feat-check check-student">✓</span>Sign in with Google</li>
+        <li><span class="feat-check check-student">✓</span>View exam instructions</li>
+        <li><span class="feat-check check-student">✓</span>Take timed assessments</li>
+        <li><span class="feat-check check-student">✓</span>See instant scores</li>
+        <li><span class="feat-check check-student">✓</span>Check leaderboard rankings</li>
+      </ul>
+      <a href="StudentLogin.jsp" class="portal-btn btn-student">
+        Student Login →
+      </a>
+      <div class="portal-bg-num">S</div>
+    </div>
+
+    <div class="portal-card portal-card-admin reveal">
+      <span class="portal-tag tag-admin">Examiner</span>
+      <h3 class="portal-title">Examiner<br>Portal</h3>
+      <p class="portal-desc">Full control over students, questions, exam instructions, and results.</p>
+      <ul class="portal-features">
+        <li><span class="feat-check check-admin">✓</span>Manage student accounts</li>
+        <li><span class="feat-check check-admin">✓</span>Build question banks</li>
+        <li><span class="feat-check check-admin">✓</span>Write exam instructions</li>
+        <li><span class="feat-check check-admin">✓</span>View leaderboard & scores</li>
+        <li><span class="feat-check check-admin">✓</span>Google OAuth admin login</li>
+      </ul>
+      <a href="AdminLogin.jsp" class="portal-btn btn-admin">
+        Examiner Login →
+      </a>
+      <div class="portal-bg-num">E</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Exam<span>ily</span></div>
+  <span class="footer-copy">© 2026 Examily, Inc. · Developed by Kumari Shristi</span>
+  <ul class="footer-links">
+    <li><a href="StudentLogin.jsp">Student</a></li>
+    <li><a href="AdminLogin.jsp">Examiner</a></li>
+    <li><a href="ContactUs.jsp">Contact</a></li>
+    <li><a href="SignUp.jsp">Sign Up</a></li>
+  </ul>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

@@ -12,10 +12,6 @@ import java.util.ArrayList;
 import oes.db.Provider;
 import oes.db.Students;
 
-/**
- *
- * @author adrianadewunmi
- */
 public class StudentsDao {
     
     public static boolean doValidate(Students sd){
@@ -169,5 +165,42 @@ public class StudentsDao {
         }
         return status;
     }
-    
+    public static Students getStudentByEmail(String email) {
+    Students st = null;
+    try {
+        Connection con = Provider.getOracleConnection();
+        String sql = "SELECT * FROM studenttable WHERE email = ?";
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setString(1, email);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            st = new Students();
+            st.setUsername(rs.getString("userid"));
+            st.setPassword(rs.getString("password"));
+            st.setName(rs.getString("name"));
+            st.setEmail(rs.getString("email"));
+        }
+    } catch (SQLException e) {
+        System.out.println("ERROR! -> " + e);
+    }
+    return st;
+}
+
+public static boolean insertGoogleStudent(Students st) {
+    boolean status = false;
+    try {
+        Connection con = Provider.getOracleConnection();
+        String sql = "INSERT INTO studenttable (userid, password, name, email) VALUES (?, ?, ?, ?)";
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setString(1, st.getUsername());
+        pst.setString(2, st.getPassword());
+        pst.setString(3, st.getName());
+        pst.setString(4, st.getEmail());
+        int val = pst.executeUpdate();
+        status = val > 0;
+    } catch (SQLException e) {
+        System.out.println("ERROR! -> " + e);
+    }
+    return status;
+}
 }

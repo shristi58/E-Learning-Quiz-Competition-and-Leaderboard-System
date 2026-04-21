@@ -4,10 +4,7 @@
  */
 package oes.db;
 
-/**
- *
- * @author adrianadewunmi
- */
+
 public class Admins {
     
     public static int precount = 0;
@@ -30,5 +27,13 @@ public class Admins {
     public void setPassword(String password) {
         this.password = password;
     }
+    private String email;
+
+public String getEmail() {
+    return email;
+}
+public void setEmail(String email) {
+    this.email = email;
+}
     
 }

@@ -46,14 +46,6 @@ Project Prerequisite:
 
 (c) servlet-api.jar
 
-- How to use:
-
-1. Clone the repo.
-
-```
-https://github.com/AAdewunmi/Online-Quiz-System.git
-```
-
 2. Database
 
 - Start MySQL Server
@@ -78,11 +70,6 @@ https://github.com/AAdewunmi/Online-Quiz-System.git
         
 Enjoy 😎
         
-## 4. Contributing:
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-👇 👇 👇
 
 Future plans:
 
@@ -111,17 +98,4 @@ Future plans:
 ![Image description](web/student.png)
 
 
-## Adapted from:
-
-UDEMY: Java Development Mega Course: Build Projects Practically
-
-(Java Programming Course: Learn Development of JAVA Projects Using JSP, JDBC, Servlets, Swing, Spring Boot, Maven, Hibernate)
-
-Project Name: Project 36: Online Quiz Sysem
-
-Created by: Engineering.Org.In
-
-Last updated: 03/2022
-
-URL: https://www.udemy.com/course/build-real-world-java-projects-using-spring-jsp-jdbc/
 

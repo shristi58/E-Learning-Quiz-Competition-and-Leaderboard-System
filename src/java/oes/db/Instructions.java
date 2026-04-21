@@ -4,10 +4,7 @@
  */
 package oes.db;
 
-/**
- *
- * @author adrianadewunmi
- */
+
 public class Instructions {
     
     private String instruction;
