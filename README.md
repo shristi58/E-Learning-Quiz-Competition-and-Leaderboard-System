@@ -83,19 +83,5 @@ Future plans:
 - Implement Log In With Google Button functionality
 
 
-## 5. Screenshots
-
-- Examily landing page:
-
-![Image description](web/landing3.png)
-
-- Examily examiner landing page:
-
-![Image description](web/admin.png)
-
-- Examily stduent landing page:
-
-![Image description](web/student.png)
-
 
 
