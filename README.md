@@ -81,6 +81,9 @@ Future plans:
 - Implement Sign up link -> Create new account page (Landing page link!)
 3. Student Login Page:
 - Implement Log In With Google Button functionality
+<img width="1600" height="756" alt="image" src="https://github.com/user-attachments/assets/920a1ea8-50ea-457a-8212-14c4a24e82cc" />
+<img width="1600" height="804" alt="image" src="https://github.com/user-attachments/assets/23c54e65-198e-400e-8c2e-1f8fb9d88c37" />
+
 
 
 
